@@ -1,0 +1,16 @@
+{
+  "name": "discord-gemini-bot",
+  "version": "1.0.0",
+  "description": "A Discord bot using Gemini API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.17.0",
+    "axios": "^1.7.7",
+    "discord-gemini-bot": "file:",
+    "discord.js": "^14.11.0",
+    "fluent-ffmpeg": "^2.1.3"
+  }
+}
