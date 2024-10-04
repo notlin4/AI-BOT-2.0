@@ -5,8 +5,8 @@ require('dotenv').config(); // 載入 .env 檔案
 module.exports = {
   token: process.env.DISCORD_TOKEN,
   clientId: process.env.DISCORD_CLIENT_ID,
-  ownerId: process.env.OWNER_ID.split(',').map(id => id.trim()),
   geminiApiKey: process.env.GEMINI_API_KEY,
+  ownerId: 'YOUR_DISCORD_USER_ID',
   geminiModel: "gemini-1.5-flash",
   safetySettings: [
     {
