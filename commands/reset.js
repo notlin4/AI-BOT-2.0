@@ -9,7 +9,7 @@ module.exports = {
     .setDescription('重設 AI 的對話記錄'),
   async execute(interaction) {
     // 檢查使用者是否有權限
-    if (!checkPermissions(interaction.member)) {
+    if (!checkPermissions(interaction.member, 'ManageMessages')) {
       return interaction.reply({ content: '你沒有權限使用這個指令。', ephemeral: true });
     }
 
