@@ -25,20 +25,17 @@ module.exports = {
     const channel = channelOption || interaction.channel;
 
     // 檢查機器人是否有權限在該頻道傳送訊息
-    if (channel.permissionsFor(interaction.guild.members.me).has('SendMessages')) {
-      // 使用陣列儲存每個伺服器的多個 AI 頻道
-      if (!config.aiChannels[guildId]) {
-        config.aiChannels[guildId] = [];
-      }
-      config.aiChannels[guildId].push(channel.id);
-      fs.writeFileSync('./config.json', JSON.stringify(config, null, 2));
-
-      await interaction.reply(`已將 <#${channel.id}> 加入 AI 對話頻道。`);
-    } else {
-      await interaction.reply(`機器人沒有權限在頻道 <#${channel.id}> 傳送訊息`);
-    }
     if (!channel.permissionsFor(interaction.guild.members.me).has('SendMessages')) {
       return interaction.reply(`機器人沒有權限在 <#${channel.id}> 傳送訊息`);
     }
+
+    // 使用陣列儲存每個伺服器的多個 AI 頻道
+    if (!config.aiChannels[guildId]) {
+      config.aiChannels[guildId] = [];
+    }
+    config.aiChannels[guildId].push(channel.id);
+    fs.writeFileSync('./config.json', JSON.stringify(config, null, 2));
+
+    await interaction.reply(`已將 <#${channel.id}> 加入 AI 對話頻道。`);
   },
 };
