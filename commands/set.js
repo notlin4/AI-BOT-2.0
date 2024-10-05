@@ -2,7 +2,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const config = require('../config.json');
 const fs = require('fs');
-const { checkPermissions } = require('../utils/permissions'); 
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -15,7 +14,7 @@ module.exports = {
     ),
   async execute(interaction) {
     // 檢查使用者是否有權限
-    if (!checkPermissions(interaction.member, 'ManageChannels')) {
+    if (!interaction.member.permissions.has('ManageChannels')) {
       return interaction.reply({ content: '你沒有權限使用這個指令。', ephemeral: true });
     }
 

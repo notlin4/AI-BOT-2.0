@@ -1,7 +1,6 @@
 // commands/list.js
 const { SlashCommandBuilder } = require('discord.js');
 const config = require('../config.json');
-const { checkPermissions } = require('../utils/permissions'); // 引入權限檢查函式
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -9,7 +8,7 @@ module.exports = {
     .setDescription('列出 AI 對話頻道'),
   async execute(interaction) {
     // 檢查使用者是否有權限
-    if (!checkPermissions(interaction.member, 'ManageChannels')) {
+    if (!interaction.member.permissions.has('ManageChannels')) {
       return interaction.reply({ content: '你沒有權限使用這個指令。', ephemeral: true });
     }
 
