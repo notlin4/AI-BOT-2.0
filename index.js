@@ -2,9 +2,9 @@
 
 const fs = require('fs');
 const path = require('path');
-const { Client, Collection, GatewayIntentBits, Routes, ActivityType } = require('discord.js');       
+const { Client, Collection, GatewayIntentBits, Routes, ActivityType } = require('discord.js');
 const { REST } = require('@discordjs/rest');
-const config = require('./config'); // 引入 config.js
+const config = require('./config.json');
 
 const client = new Client({
   intents: [

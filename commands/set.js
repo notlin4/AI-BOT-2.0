@@ -1,8 +1,8 @@
 // commands/set.js
 const { SlashCommandBuilder } = require('discord.js');
+const config = require('../config.json');
 const fs = require('fs');
-const { checkPermissions } = require('../utils/permissions');
-const path = require('path');
+const { checkPermissions } = require('../utils/permissions'); 
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -26,34 +26,20 @@ module.exports = {
     const channel = channelOption || interaction.channel;
 
     // 檢查機器人是否有權限在該頻道傳送訊息
+    if (channel.permissionsFor(interaction.guild.members.me).has('SendMessages')) {
+      // 使用陣列儲存每個伺服器的多個 AI 頻道
+      if (!config.aiChannels[guildId]) {
+        config.aiChannels[guildId] = [];
+      }
+      config.aiChannels[guildId].push(channel.id);
+      fs.writeFileSync('./config.json', JSON.stringify(config, null, 2));
+
+      await interaction.reply(`已將 <#${channel.id}> 加入 AI 對話頻道。`);
+    } else {
+      await interaction.reply(`機器人沒有權限在頻道 <#${channel.id}> 傳送訊息`);
+    }
     if (!channel.permissionsFor(interaction.guild.members.me).has('SendMessages')) {
       return interaction.reply(`機器人沒有權限在 <#${channel.id}> 傳送訊息`);
     }
-
-    // 讀取 aiChannels.json 檔案
-    const aiChannelsFilePath = path.join(__dirname, '../aiChannels.json');
-    let aiChannels = {};
-    try {
-      aiChannels = JSON.parse(fs.readFileSync(aiChannelsFilePath, 'utf-8'));
-    } catch (error) {
-      // 如果檔案不存在或無法解析，則初始化 aiChannels 物件
-      console.error('讀取 aiChannels.json 檔案發生錯誤:', error);
-    }
-
-    // 檢查是否已經加入
-    if (aiChannels[guildId] && aiChannels[guildId].includes(channel.id)) {
-      return interaction.reply(`<#${channel.id}> 已經是 AI 對話頻道了。`);
-    }
-
-    // 更新 aiChannels 物件
-    if (!aiChannels[guildId]) {
-      aiChannels[guildId] = [];
-    }
-    aiChannels[guildId].push(channel.id);
-
-    // 將修改後的 aiChannels 寫回 aiChannels.json 檔案
-    fs.writeFileSync(aiChannelsFilePath, JSON.stringify(aiChannels, null, 2));
-
-    await interaction.reply(`已將 <#${channel.id}> 加入 AI 對話頻道。`);
   },
 };

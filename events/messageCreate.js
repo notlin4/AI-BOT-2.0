@@ -1,11 +1,11 @@
 // events/messageCreate.js
 const { EmbedBuilder } = require('discord.js');
-const config = require('../config');
+const config = require('../config.json');
 const { generateResponse } = require('../utils/geminiAPI');
 
 module.exports = {
   name: 'messageCreate',
-  async execute(message, client) {
+  async execute(message, client) { 
     if (!message) {
       console.error("message 未定義！");
       return;
@@ -14,7 +14,7 @@ module.exports = {
     if (message.author.bot) return;
 
     // 檢查訊息是否在 AI 對話頻道中或提及了機器人
-    if ((message.guild && config.aiChannels && config.aiChannels[message.guild.id] && config.aiChannels[message.guild.id].includes(message.channel.id)) || message.mentions.users.has(client.user.id)) {
+    if ((message.guild && config.aiChannels[message.guild.id] && config.aiChannels[message.guild.id].includes(message.channel.id)) || message.mentions.users.has(client.user.id)) {
       try {
         // 模擬打字效果
         await message.channel.sendTyping();
@@ -27,8 +27,7 @@ module.exports = {
 
         const response = await generateResponse(formattedMessage, message.attachments, message.guild.id, message);
 
-        // 使用普通訊息回覆，而不是嵌入訊息，並允許提及所有人
-        await message.reply({ content: response, allowedMentions: { parse: [] } });
+        await message.reply({ content: response, allowedMentions: { parse: [] } }); 
       } catch (error) {
         console.error('產生回覆時發生錯誤', error);
         await message.reply('很抱歉，處理您的請求時發生錯誤。');

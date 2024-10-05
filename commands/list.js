@@ -1,6 +1,6 @@
 // commands/list.js
 const { SlashCommandBuilder } = require('discord.js');
-const config = require('../config');
+const config = require('../config.json');
 const { checkPermissions } = require('../utils/permissions'); // 引入權限檢查函式
 
 module.exports = {
@@ -15,7 +15,7 @@ module.exports = {
 
     const guildId = interaction.guild.id;
 
-    if (config.aiChannels && config.aiChannels[guildId] && config.aiChannels[guildId].length > 0) {
+    if (config.aiChannels[guildId] && config.aiChannels[guildId].length > 0) {
       const channelList = config.aiChannels[guildId].map(channelId => `<#${channelId}>`).join('\n');
       await interaction.reply(`目前的 AI 對話頻道：\n${channelList}`);
     } else {

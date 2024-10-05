@@ -1,7 +1,7 @@
 // utils/geminiAPI.js
 const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
 const { GoogleAIFileManager, FileState } = require("@google/generative-ai/server"); // 從 server 引入
-const config = require('../config');
+const config = require('../config.json');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -19,7 +19,6 @@ const systemInstruction = fs.readFileSync('./prompts.txt', 'utf-8');
 const chats = {};
 
 function resetChat(guildId) {
-  // 從 config.js 中讀取安全設定
   let safetySettings = config.safetySettings;
 
   let model = genAI.getGenerativeModel({ model: config.geminiModel, safetySettings, systemInstruction });
@@ -189,8 +188,12 @@ async function generateResponse(messagecontent, attachments, guildId, message) {
     const result = await chat.sendMessage(parts);
     const response = await result.response;
 
+    // 計算延遲時間
+    const endTime = Date.now();
+    const geminiLatency = endTime - startTime;
+
     // 輸出 Gemini API 延遲和回應到主控台
-    console.log(`Gemini API 延遲：${Date.now() - startTime} 毫秒`);
+    console.log(`Gemini API 延遲：${geminiLatency} 毫秒`);
     console.log(`Gemini API 回應：${response.text()}`);
 
     const convertedResponse = await convertText(response.text());
@@ -230,6 +233,7 @@ async function uploadToGemini(url, mimeType) {
 
 function updateSafetySettings(newSettings, guildId) {
   config.safetySettings[guildId] = newSettings;
+  fs.writeFileSync('./config.json', JSON.stringify(config, null, 2));
   resetChat(guildId); // 傳入 guildId
 }
 
