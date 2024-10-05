@@ -33,6 +33,12 @@ module.exports = {
     if (!config.aiChannels[guildId]) {
       config.aiChannels[guildId] = [];
     }
+
+    // 檢查頻道是否已經存在
+    if (config.aiChannels[guildId].includes(channel.id)) {
+      return interaction.reply(`<#${channel.id}> 已經是 AI 對話頻道。`);
+    }
+
     config.aiChannels[guildId].push(channel.id);
     fs.writeFileSync('./config.json', JSON.stringify(config, null, 2));
 
